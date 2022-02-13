@@ -38,7 +38,7 @@ console.log(`${filelist.length} files found.`);
         await driver.findElement(By.id('email')).sendKeys(username);
         await driver.findElement(By.id('password')).click();
         await driver.findElement(By.id('password')).sendKeys(password);
-        await driver.findElement(By.id('loginPopupButton')).click();
+        await driver.findElement(By.id('signupPopupButton')).click();
 
         //  Detect when login is completed
         console.log('Waiting for login.');
@@ -63,34 +63,24 @@ console.log(`${filelist.length} files found.`);
                     //  Wait until the image is processed
                     //  This doesn't seem to work btw
                     console.log('Waiting for processing...')
-                    await driver.wait(until.elementLocated(By.xpath("//*[text() = 'Your colorized photo is ready!']")));
+                    await driver.wait(until.elementLocated(By.xpath("//*[text() = 'Your photo is ready!']")));
                     console.log('Processing completed!');
 
                     //  Download image
                     console.log('Waiting 3 seconds...')
                     await new Promise(resolve => { setTimeout(() => resolve(), 3000) });
-                    await driver.wait(until.elementLocated(By.className('copy_link_to_clipboard_text')));
+                    await driver.wait(until.elementLocated(By.className('dropdown_menu adaptive_menu_dropdown button_menu stretch download_photo')));
                     console.log('Waiting for dropdown to appear...');
-                    await driver.wait(until.elementLocated(By.className('selector_wrapper download_photo_options_selector')));
+                    await driver.findElement(By.className('mh_button mh_button_type_primary rounded mh_button_size_medium button_menu_header')).click();
+                    console.log('Dropdown clicked...');
+                    await driver.wait(until.elementLocated(By.className('dropdown_menu_list dropdown_menu_open')));
                     console.log('Appeared!');
 
                     ok = false;
                     while (!ok) {
                         try {
                             console.log('Attempting to open dropdown...');
-                            await driver.findElement(By.className('selector_wrapper download_photo_options_selector')).click();
-                            ok = true;
-                        } catch (e) {
-                            ok = false;
-                            await new Promise(resolve => { setTimeout(() => resolve(), 1000) });
-                        }
-                    }
-
-                    ok = false;
-                    while (!ok) {
-                        try {
-                            console.log('Attempting to download...');
-                            await driver.findElement(By.className('inverse selector_item colorized_photo_item')).click();
+                            await driver.wait(until.elementLocated(By.xpath("//*[text() = 'Color-restored']"))).click();
                             ok = true;
                         } catch (e) {
                             ok = false;
